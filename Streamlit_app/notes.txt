@@ -1,0 +1,92 @@
+def main():
+    st.header("HOMEPAGE")
+    st.title("Welcome to you DataScience App !")
+    st.write("Here, you can see, interpret and modeling your data.")
+    st.write("Your dataset : ",data.head(30))
+    
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    main()
+    
+
+from openai import OpenAI
+
+client = OpenAI()
+response = client.chat.completions.with_raw_response.create(
+    messages=[{
+        "role": "user",
+        "content": "Say this is a test",
+    }],
+    model="gpt-3.5-turbo",
+)
+print(response.headers.get('X-My-Header'))
+
+completion = response.parse()  # get the object that `chat.completions.create()` would have returned
+print(completion)
+
+import openai# Configuration de la clé API OpenAI
+openai.api_key = "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" 
+
+# Fonction pour interagir avec l'API ChatGPT
+def talk_to_chatgpt(prompt):
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Remplacez par le moteur approprié
+        prompt=prompt,
+        max_tokens=100,
+    )
+    return response['choices'][0]['text']
+
+# Interface utilisateur Streamlit
+def main():
+    st.title("Chatbot avec ChatGPT")
+
+    user_input = st.text_input("Vous: ")
+
+    if user_input:
+        # Appel de la fonction pour interagir avec ChatGPT
+        chatbot_response = talk_to_chatgpt(user_input)
+        st.text(f"ChatGPT: {chatbot_response}")
+
+if __name__ == "__main__":
+    main()
+
+import streamlit as st 
+import pandas as pd
+import openai
+
+st.set_page_config(
+    page_title="Python Final Project",
+    page_icon="📚",
+)
+
+st.header("HOMEPAGE")
+st.title("Welcome to you DataScience App !")
+st.image('https://www.dashtech.org/wp-content/uploads/2022/03/summer_school_on_data_science-750x375.jpg')
+diabetic_data=pd.read_csv('diabetic_data.csv')
+st.write("Here, you can see, interpret and modeling your data.")
+st.write("Your dataset : ",diabetic_data.head(30))
+
+info_df = pd.DataFrame({
+        'Number of Lines': [diabetic_data.shape[0]],
+        'Number of Rows': [diabetic_data.shape[1]],
+    })
+
+    # Afficher un tableau avec les informations
+st.write("Some precisions about the dataset :")
+st.write(info_df)
+
+
+import streamlit as st
+
+option = st.selectbox(
+    'How would you like to be contacted?',
+    ('Email', 'Home phone', 'Mobile phone'))
+
+st.write('You selected:', option)
