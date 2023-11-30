@@ -7,7 +7,11 @@ st.set_page_config(
     page_icon="📚",
 )
 
-st.header("HOMEPAGE")
+st.sidebar.image("https://formation-continue.ehesp.fr/sites/default/files/styles/crop_actu_desktop_800x540/public/content/news/img/shutterstock_1917115745_0.jpg?h=4b45c30e&itok=UCzG6up_")
+st.sidebar.markdown("## **Subject Area** :\n*__Health and Medicine__*")
+st.sidebar.markdown("## **Dataset Characteristics** :\n*__Multivariate__*")
+st.sidebar.markdown("## **Feature Type** :\n*__Categorical, Integer__*")
+
 st.title("Welcome to you DataScience App !")
 st.write("Here, you can see, interpret and modeling your data.")
 st.image('https://cdn.rentechdigital.com/common_files/blogs/what-is-data-science-and-how-can-it-influence-decision-making-swipecart-blog-img-02-01-07-2022.gif')
@@ -35,13 +39,15 @@ diabetic_data['weight'] = pd.to_numeric(diabetic_data['weight'], errors='coerce'
 diabetic_data['weight'].fillna(diabetic_data['weight'].mean(), inplace=True)
 #on supprime les colonnes max_glu-result et A1Cresult
 diabetic_data=diabetic_data.drop(['max_glu_serum','A1Cresult'],axis=1)
-    
 
 st.markdown("The dataset represents ten years (1999-2008) of clinical care at 130 US hospitals and integrated delivery networks. Each row concerns hospital records of patients diagnosed with diabetes, who underwent laboratory, medications, and stayed up to 14 days.")
 st.write("Your dataset : ",diabetic_data.head(30))
 st.write("Some precisions about the dataset :")
 st.write("Number of Lines : ", diabetic_data.shape[0])
 st.write("Number of Columns : ", diabetic_data.shape[1])
+    
+
+
 
 
 

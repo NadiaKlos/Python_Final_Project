@@ -10,6 +10,11 @@ st.set_page_config(
     page_title="Python Final Project",
     page_icon="📚",
 )
+st.sidebar.image("https://formation-continue.ehesp.fr/sites/default/files/styles/crop_actu_desktop_800x540/public/content/news/img/shutterstock_1917115745_0.jpg?h=4b45c30e&itok=UCzG6up_")
+st.sidebar.markdown("## **Subject Area** :\n*__Health and Medicine__*")
+st.sidebar.markdown("## **Dataset Characteristics** :\n*__Multivariate__*")
+st.sidebar.markdown("## **Feature Type** :\n*__Categorical, Integer__*")
+
 st.header("About the patients 💊")
 diabetic_data=pd.read_csv('diabetic_data.csv')
 diabetic_data.replace('?', np.nan, inplace=True)
