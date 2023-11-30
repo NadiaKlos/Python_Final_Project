@@ -3,8 +3,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-st.set_option('deprecation.showPyplotGlobalUse', False)
+import time
 
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.set_page_config(
+    page_title="Python Final Project",
+    page_icon="📚",
+)
+st.header("About the patients 💊")
 diabetic_data=pd.read_csv('diabetic_data.csv')
 diabetic_data.replace('?', np.nan, inplace=True)
 #on fitre sur les colonnes qui contiennent moins de 50000 données manquantes
@@ -28,29 +34,43 @@ diabetic_data['weight'] = pd.to_numeric(diabetic_data['weight'], errors='coerce'
 diabetic_data['weight'].fillna(diabetic_data['weight'].mean(), inplace=True)
 #on supprime les colonnes max_glu-result et A1Cresult
 diabetic_data=diabetic_data.drop(['max_glu_serum','A1Cresult'],axis=1)
-    
 
-race_counts = diabetic_data['race'].value_counts()
+progress_message = st.empty()
 
-fig, ax = plt.subplots(figsize=(15, 8))
-colors = sns.color_palette('pastel')[0:len(race_counts)]
-labels = race_counts.index
-explode = [0.1]* len(race_counts)   # on sépare légèrement chaque tranche pour les mettre en évidence
-
-plt.pie(race_counts, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140, explode=explode)
-plt.title('Répartition des races')
-st.pyplot(fig)
-
+# Affiche un spinner pendant le chargement
+with st.spinner("Chargement en cours..."):
+    # Simulation d'une tâche prenant du temps
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.5)
+        
+        progress_message.text(f"Wait a moment please😴... : {percent_complete}%")
+st.title("Gender repartition")       
 plt.figure(figsize=(15, 8))
 sns.countplot(y='gender', data=diabetic_data, palette='husl')
 plt.title('Répartition des Genres')
 plt.ylabel('Genre')
 plt.xlabel('Nombre de Patients')
 st.pyplot()
+st.write("We can note that the elderly and women were the most affected by diabetes between 1999 and 2008 in US hospitals.")
 
+st.title("Patients age repartition")
 plt.figure(figsize=(15, 8))
 sns.histplot(diabetic_data['age'], bins=20, kde=True)
 plt.title("Suivi de l'age des diabétiques")
 plt.xlabel('Âge')
 plt.ylabel('Fréquence')
 st.pyplot()
+
+st.title("Races repartition")
+race_counts = diabetic_data['race'].value_counts()
+plt.subplots(figsize=(15, 8))
+colors = sns.color_palette('pastel')[0:len(race_counts)]
+labels = race_counts.index
+explode = [0.1]* len(race_counts)   # on sépare légèrement chaque tranche pour les mettre en évidence
+plt.pie(race_counts, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140, explode=explode)
+plt.title('Répartition des races')
+st.pyplot()
+st.write("We note that the Caucasian population is largely represented among diabetics treated in the 130 American hospitals between 1999 and 2008. But this distribution must be put into perspective since it illustrates the state of the American population.")
+
+
+

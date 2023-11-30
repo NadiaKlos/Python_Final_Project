@@ -9,6 +9,7 @@ st.set_page_config(
 
 st.header("HOMEPAGE")
 st.title("Welcome to you DataScience App !")
+st.write("Here, you can see, interpret and modeling your data.")
 st.image('https://cdn.rentechdigital.com/common_files/blogs/what-is-data-science-and-how-can-it-influence-decision-making-swipecart-blog-img-02-01-07-2022.gif')
 
 diabetic_data=pd.read_csv('diabetic_data.csv')
@@ -36,15 +37,11 @@ diabetic_data['weight'].fillna(diabetic_data['weight'].mean(), inplace=True)
 diabetic_data=diabetic_data.drop(['max_glu_serum','A1Cresult'],axis=1)
     
 
-
-st.write("Here, you can see, interpret and modeling your data.")
-st.write("Your dataset : ",diabetic_data.head())
-
-info_df = pd.DataFrame({
-        'Number of Lines': [diabetic_data.shape[0]],
-        'Number of Rows': [diabetic_data.shape[1]],
-    })
-
-    # Afficher un tableau avec les informations
+st.markdown("The dataset represents ten years (1999-2008) of clinical care at 130 US hospitals and integrated delivery networks. Each row concerns hospital records of patients diagnosed with diabetes, who underwent laboratory, medications, and stayed up to 14 days.")
+st.write("Your dataset : ",diabetic_data.head(30))
 st.write("Some precisions about the dataset :")
-st.write(info_df)
+st.write("Number of Lines : ", diabetic_data.shape[0])
+st.write("Number of Columns : ", diabetic_data.shape[1])
+
+
+

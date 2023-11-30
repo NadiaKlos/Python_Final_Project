@@ -4,10 +4,15 @@ import numpy as np
 import altair as alt
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import streamlit as st
+import time
+st.set_page_config(
+    page_title="Python Final Project",
+    page_icon="📚",
+)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-st.header("Inside the hospitals")
+st.header("Inside the hospitals ⛑️")
 
 diabetic_data=pd.read_csv('diabetic_data.csv')
 diabetic_data.replace('?', np.nan, inplace=True)
@@ -38,11 +43,45 @@ medicines_data = diabetic_data.columns[24:45]
 
 # Filtrer les données pour exclure les valeurs 'No'
 filtered_data = diabetic_data[medicines_data][(diabetic_data[medicines_data] == 'Down') | (diabetic_data[medicines_data] == 'Steady') | (diabetic_data[medicines_data] == 'Up')]
+progress_message = st.empty()
+
+# Affiche un spinner pendant le chargement
+with st.spinner("Chargement en cours..."):
+    # Simulation d'une tâche prenant du temps
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.5)
+        
+        progress_message.text(f"Wait a moment please😴... : {percent_complete}%")
 
 # Créer le graphique
+st.title("Les traitements utilisés")
 plt.figure(figsize=(15, 8))
 sns.countplot(data=pd.melt(filtered_data), x='value', hue='variable')
 plt.title('Medicines')
 plt.xlabel('Level')
 plt.legend(title='Colonnes', bbox_to_anchor=(1.05, 1), loc='upper left')
 st.pyplot()
+st.write("We note that insulin was the most used product in American hospitals between 1999 and 2008 to treat diabetes. This is still the case today.")
+
+st.title("Distribution du temps à l\'hôpital")
+plt.figure(figsize=(10, 6))
+diabetic_data['time_in_hospital'].value_counts().sort_index().plot(kind='bar', color='green')
+plt.title('Distribution du temps à l\'hôpital')
+plt.xlabel('Temps à l\'hôpital (en jours)')
+plt.ylabel('Nombre de patients')
+st.pyplot()
+st.write("This graph shows that in general, patients spend very little time in hospital, between 2 and 4 days, and no one spends more than 2 weeks. This shows that this pathology was quite easily treated in American hospitals, without major complications.")
+
+st.title("État des Readmissions")
+
+# Créez un graphique avec Matplotlib
+fig, ax = plt.subplots(figsize=(8, 8))
+sns.countplot(x='readmitted', data=diabetic_data, palette='viridis')
+plt.title('État des Readmissions')
+plt.xlabel('Readmission')
+plt.ylabel('Nombre de patients')
+
+# Affichez le graphique dans l'application Streamlit
+st.pyplot(fig)
+st.write("As a result, 56.64% of patients are not readmitted, 32.68% are readmitted more than 30 days after discharge, and only 10.68% less than 30 days later.")
+
