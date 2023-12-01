@@ -1,10 +1,20 @@
 import streamlit as st
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
     page_title="Python Final Project",
@@ -20,6 +30,12 @@ with st.sidebar:
     "[View the source code (GitHub)](https://github.com/NadiaKlos/Python_Final_Project)"
 
 st.header("Modeling 🧐")
+st.write("The goal is to determine the early readmission of the patient within 30 days of discharge.")
+st.title("Why is the column ‘readmitted’ our target ?")
+st.write("Predicting readmission is crucial in the medical field. By identifying patients at high risk of readmission, healthcare professionals can take preventive measures, such as post-hospital follow-up, adjusting medications, or scheduling follow-up appointments, to reduce the risk of readmission.")
+st.title("Why do we use classification models ?")
+st.write("The use of classification models is appripriate here. The ‘readmitted’ column is categorical, indicating whether a patient is readmitted or not. Since we're looking to predict a specific class (readmitted or non-readmitted), classification is the appropriate task. ")
+st.write("🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺")
 diabetic_data=pd.read_csv('diabetic_data.csv')
 diabetic_data.replace('?', np.nan, inplace=True)
 #on fitre sur les colonnes qui contiennent moins de 50000 données manquantes
@@ -47,9 +63,88 @@ diabetic_data=diabetic_data.drop(['max_glu_serum','A1Cresult'],axis=1)
 progress_message = st.empty()
 
 # Affiche un spinner pendant le chargement
-with st.spinner("Chargement en cours..."):
+#with st.spinner("Chargement en cours..."):
     # Simulation d'une tâche prenant du temps
-    for percent_complete in range(0, 101, 10):
-        time.sleep(0.5)
+ #   for percent_complete in range(0, 101, 10):
+  #      time.sleep(0.5)
         
-        progress_message.text(f"Wait a moment please😴... : {percent_complete}%")
+   #     progress_message.text(f"Wait a moment please😴... : {percent_complete}%")
+        
+        
+
+categorical_data = diabetic_data.select_dtypes(include=['object'])
+numerical_data = diabetic_data.select_dtypes(include=['int64','float64'])
+
+encoder = OrdinalEncoder().set_output(transform="pandas")
+data_encoded = encoder.fit_transform(categorical_data)
+diabetic_data_enc = pd.concat([numerical_data, data_encoded], axis=1)
+target_name = "readmitted"
+Y = diabetic_data_enc[target_name]
+X = diabetic_data_enc.drop(columns=[target_name])
+x_train, x_test, y_train, y_test = train_test_split(X,Y, test_size=0.2,random_state=42)
+scaler = StandardScaler()
+x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.transform(x_test)
+
+
+#RANDOM FOREST
+st.header("RandomForest")
+
+st.markdown("The best hyperparameters are : **max_depth=20, min_samples_split=2, n_estimators= 200**")
+st.markdown("With these hyperparameters we have **62.12  %** of accuracy \n But you can choose other values if you want to try :")
+
+#on laisse la choix à l'utilisateur de choisir les paramètres qu'il veut tester
+max_depth = st.slider('Max Depth', min_value=1, max_value=100, value=20)
+min_samples_split = st.slider('Min Samples Split', min_value=2, max_value=10, value=2)
+n_estimators = st.slider('Number of Estimators', min_value=1, max_value=500, value=200)
+# Créer et entraîner le modèle avec les paramètres choisis par l'utilisateur
+if st.button('Ok🟩'):
+    with st.spinner('The model is running🏃🏃🏃...'):
+        best_rf_model = RandomForestClassifier(max_depth=max_depth, min_samples_split=min_samples_split, n_estimators=n_estimators)
+        best_rf_model.fit(x_train_scaled, y_train)
+        y_pred_rf = best_rf_model.predict(x_test_scaled)
+        accuracy_rf = accuracy_score(y_test, y_pred_rf)
+        st.success('It is over 🎉!')
+        st.write("With your selection we have ", np.round(accuracy_rf*100,2)," % of accuracy")
+
+#KNN
+st.header("K-Nearest Neighbors (KNN)")
+st.markdown("The best hyperparameters are : **n_neighbors= 7, weights= 'distance'**")
+st.markdown("With these hyperparameters we have **55.69  %** of accuracy \n But you can choose other values if you want to try :")
+
+#on laisse la choix à l'utilisateur de choisir les paramètres qu'il veut tester
+n_neighbors = st.slider('Nombre de voisins (K)', min_value=1, max_value=50, value=5)
+weights = st.selectbox('Poids des voisins', ['uniform', 'distance'])
+# Créer et entraîner le modèle avec les paramètres choisis par l'utilisateur
+if st.button('Ok🟪'):
+    with st.spinner('The model is running🏃🏃🏃...'):
+        knn_model = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights)
+        knn_model.fit(x_train_scaled, y_train)
+        y_pred_knn = knn_model.predict(x_test_scaled)
+        accuracy_knn = accuracy_score(y_test, y_pred_knn)
+        st.success('It is over 🎉!')
+        st.write("With your selection we have ", np.round(accuracy_knn*100,2)," % of accuracy")
+
+#Decision Tree 
+st.header("Decision Tree")
+
+st.markdown("The best hyperparameters are : **criterion= 'gini', max_depth= 5, min_samples_leaf= 2, min_samples_split= 2**")
+st.markdown("With these hyperparameters we have **60.25  %** of accuracy \n But you can choose other values if you want to try :")
+
+#on laisse la choix à l'utilisateur de choisir les paramètres qu'il veut tester
+max_depth_dt = st.slider('Max Depth', min_value=1, max_value=50, value=5)
+criterion = st.selectbox('Criterion', ['gini', 'entropy'])
+# Créer et entraîner le modèle avec les paramètres choisis par l'utilisateur
+if st.button('Ok🟦'):
+    with st.spinner('The model is running🏃🏃🏃...'):
+        dt_model = DecisionTreeClassifier(max_depth=max_depth_dt, criterion=criterion)
+        dt_model.fit(x_train, y_train)
+        y_pred_dt = dt_model.predict(x_test_scaled)
+        accuracy_dt = accuracy_score(y_test, y_pred_dt)
+        st.success('It is over 🎉!')
+        st.write("With your selection we have ", np.round(accuracy_dt*100,2)," % of accuracy")
+
+
+
+
+
