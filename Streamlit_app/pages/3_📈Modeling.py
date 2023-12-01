@@ -1,27 +1,25 @@
-import streamlit as st 
+import streamlit as st
+
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
+import seaborn as sns
+import time
+st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
     page_title="Python Final Project",
     page_icon="📚",
 )
-
 st.sidebar.image("https://formation-continue.ehesp.fr/sites/default/files/styles/crop_actu_desktop_800x540/public/content/news/img/shutterstock_1917115745_0.jpg?h=4b45c30e&itok=UCzG6up_")
 st.sidebar.markdown("## **Subject Area** :\n*__Health and Medicine__*")
 st.sidebar.markdown("## **Dataset Characteristics** :\n*__Multivariate__*")
 st.sidebar.markdown("## **Feature Type** :\n*__Categorical, Integer__*")
-
-
 with st.sidebar:
     openai_api_key = "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"
     "[View the source of the dataset](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008)"
     "[View the source code (GitHub)](https://github.com/NadiaKlos/Python_Final_Project)"
 
-st.title("Welcome to your DataScience App !")
-st.write("Here, you can see, interpret and modeling your data.")
-st.image('https://cdn.rentechdigital.com/common_files/blogs/what-is-data-science-and-how-can-it-influence-decision-making-swipecart-blog-img-02-01-07-2022.gif')
-
+st.header("Modeling 🧐")
 diabetic_data=pd.read_csv('diabetic_data.csv')
 diabetic_data.replace('?', np.nan, inplace=True)
 #on fitre sur les colonnes qui contiennent moins de 50000 données manquantes
@@ -46,14 +44,12 @@ diabetic_data['weight'].fillna(diabetic_data['weight'].mean(), inplace=True)
 #on supprime les colonnes max_glu-result et A1Cresult
 diabetic_data=diabetic_data.drop(['max_glu_serum','A1Cresult'],axis=1)
 
-st.markdown("The dataset represents ten years (1999-2008) of clinical care at 130 US hospitals and integrated delivery networks. Each row concerns hospital records of patients diagnosed with diabetes, who underwent laboratory, medications, and stayed up to 14 days.")
-st.write("Your dataset : ",diabetic_data.head(30))
-st.write("Some precisions about the dataset :")
-st.write("Number of Lines : ", diabetic_data.shape[0])
-st.write("Number of Columns : ", diabetic_data.shape[1])
-    
+progress_message = st.empty()
 
-
-
-
-
+# Affiche un spinner pendant le chargement
+with st.spinner("Chargement en cours..."):
+    # Simulation d'une tâche prenant du temps
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.5)
+        
+        progress_message.text(f"Wait a moment please😴... : {percent_complete}%")
