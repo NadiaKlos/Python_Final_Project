@@ -11,6 +11,10 @@ st.sidebar.image("https://formation-continue.ehesp.fr/sites/default/files/styles
 st.sidebar.markdown("## **Subject Area** :\n*__Health and Medicine__*")
 st.sidebar.markdown("## **Dataset Characteristics** :\n*__Multivariate__*")
 st.sidebar.markdown("## **Feature Type** :\n*__Categorical, Integer__*")
+with st.sidebar:
+    openai_api_key = "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"
+    "[View the source of the dataset](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008)"
+    "[View the source code (GitHub)](https://github.com/NadiaKlos/Python_Final_Project)"
 
 st.title("Welcome to you DataScience App !")
 st.write("Here, you can see, interpret and modeling your data.")

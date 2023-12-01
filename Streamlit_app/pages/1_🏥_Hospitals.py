@@ -16,6 +16,10 @@ st.sidebar.image("https://formation-continue.ehesp.fr/sites/default/files/styles
 st.sidebar.markdown("## **Subject Area** :\n*__Health and Medicine__*")
 st.sidebar.markdown("## **Dataset Characteristics** :\n*__Multivariate__*")
 st.sidebar.markdown("## **Feature Type** :\n*__Categorical, Integer__*")
+with st.sidebar:
+    openai_api_key = "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"
+    "[View the source of the dataset](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008)"
+    "[View the source code (GitHub)](https://github.com/NadiaKlos/Python_Final_Project)"
 
 
 st.header("Inside the hospitals ⛑️")
@@ -80,14 +84,11 @@ st.write("This graph shows that in general, patients spend very little time in h
 
 st.title("État des Readmissions")
 
-# Créez un graphique avec Matplotlib
 fig, ax = plt.subplots(figsize=(8, 8))
 sns.countplot(x='readmitted', data=diabetic_data, palette='viridis')
 plt.title('État des Readmissions')
 plt.xlabel('Readmission')
 plt.ylabel('Nombre de patients')
-
-# Affichez le graphique dans l'application Streamlit
 st.pyplot(fig)
 st.write("As a result, 56.64% of patients are not readmitted, 32.68% are readmitted more than 30 days after discharge, and only 10.68% less than 30 days later.")
 
